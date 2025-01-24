@@ -15,7 +15,7 @@ Below is a best effort to replicate the comparison 2.2.1 from the blog post. Onl
 | MJX old script | 0.2M | 1.6M | 2.9M |
 | MJX Newton LU5 - No Contact | 2.2M | 10.4M | 13.4M |
 
-Key differences compared to what was done in the blog post:
+Key changes made to the MJX script:
 
 * Disable collisions with `mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_CONTACT`.
 * Scan instead of Python for loop.
