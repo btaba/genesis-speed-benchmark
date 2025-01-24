@@ -7,7 +7,7 @@ python test_genesis.py -B 1024 --mjxxml
 
 Tested on RTX 4090, reporting steps per second.
 
-"Genesis (no collision)" should be compared to "MJX Newton LU5 - No Contact". Only joint limits are being tested here, as done in the blog post.
+"Genesis (no collision)" should be compared to "MJX Newton LU5 - No Contact". Only joint limits are being tested here, as done in the blog post. "MJX old script" roughly matches what was reported in the blog post. I can't replicate the Genesis numbers from the blog post exactly.
 
 | Batch Size | 1024 | 8192 | 16384 |
 |---|---|---|---|
