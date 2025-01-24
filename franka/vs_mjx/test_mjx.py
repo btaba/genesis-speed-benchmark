@@ -34,9 +34,8 @@ else:
     mj_model = mujoco.MjModel.from_xml_path('../../assets/xml/franka_emika_panda/scene_free.xml')
 mj_model.opt.timestep = 0.01
 
-# mj_model.opt.solver = 1 # CG
-# mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_LIMIT
-# mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_CONTACT
+mj_model.opt.solver = 1 # CG
+mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_CONTACT
 
 if args.c0: # disable collision
     mj_model.geom_contype = np.zeros_like(mj_model.geom_contype)
@@ -108,7 +107,6 @@ print('opt: ', mj_model.opt.ls_iterations, mj_model.opt.iterations)
 def unroll(d):
     @jax.vmap
     def step(d, _):
-        d = d.replace(qpos=d.qpos.at[0].add(1e-3))
         d = mjx.step(mjx_model, d)
         return d, None
     d, _ = jax.lax.scan(step, d, None, length=1000, unroll=5)
