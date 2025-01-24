@@ -24,4 +24,6 @@ Key changes made to the MJX script:
 * Scan instead of Python for loop.
 * Pick solver params that we actually use in MJX for training (`iterations=5`, `ls_iterations=8`). Set the same params for the Genesis script.
 
+For a full code diff, see [here](https://github.com/btaba/genesis-speed-benchmark/compare/main...btaba:genesis-speed-benchmark:test?expand=1).
+
 NOTE: missing values are due to JAX slow compilation alarm (need to open a bug report)
