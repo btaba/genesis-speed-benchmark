@@ -34,7 +34,9 @@ else:
     mj_model = mujoco.MjModel.from_xml_path('../../assets/xml/franka_emika_panda/scene_free.xml')
 mj_model.opt.timestep = 0.01
 
-mj_model.opt.solver = 1 # CG
+# mj_model.opt.solver = 1 # CG
+# mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_LIMIT
+# mj_model.opt.disableflags |= mujoco.mjtDisableBit.mjDSBL_CONTACT
 
 if args.c0: # disable collision
     mj_model.geom_contype = np.zeros_like(mj_model.geom_contype)
@@ -58,39 +60,66 @@ mjx_model = mjx.put_model(mj_model)
 mjx_data = mjx.put_data(mj_model, mj_data)
 mjx_data = jax.vmap(lambda _: mjx_data)(np.arange(args.B))
 
+print('Ncon: ', mjx_data.ncon)
+print('Nefc: ', mjx_data.nefc)
+print('opt: ', mj_model.opt.ls_iterations, mj_model.opt.iterations)
 
-def mjx_step_n(model, data):
-    for _ in range(jit_steps):
-        data = mjx.step(model, data)
-    return data
-jit_step_n = jax.jit(jax.vmap(mjx_step_n, in_axes=(None, 0)), backend='gpu')
+# # BEFORE
+# def mjx_step_n(model, data):
+#     for _ in range(jit_steps):
+#         data = mjx.step(model, data)
+#     return data
+# jit_step_n = jax.jit(jax.vmap(mjx_step_n, in_axes=(None, 0)), backend='gpu')
 
-# warmup
-i_cur = 0
-while True:
-    mjx_data = jit_step_n(mjx_model, mjx_data)
-    i_cur += jit_steps
-    if i_cur >= 200:
-        break
-print('warmup done')
+# # warmup
+# i_cur = 0
+# while True:
+#     mjx_data = jit_step_n(mjx_model, mjx_data)
+#     i_cur += jit_steps
+#     if i_cur >= 200:
+#         break
+# print('warmup done')
+
+# t0 = time.perf_counter()
+# i_cur = 0
+# while True:
+#     mjx_data = jit_step_n(mjx_model, mjx_data)
+
+#     if args.v:
+#         mj_data = mjx.get_data(mj_model, mjx_data)[0]
+#         renderer.update_scene(mj_data)
+#         img = renderer.render()
+
+#         cv2.imshow(f'mujoco', img[..., [2, 1, 0]])
+#         cv2.waitKey(1)
+
+#     i_cur += jit_steps
+#     if i_cur >= 1000:
+#         break
+
+# t1 = time.perf_counter()
+
+# print(f'per env: {1000 / (t1 - t0):,.2f} FPS')
+# print(f'total  : {1000 / (t1 - t0) * n_envs:,.2f} FPS')
+
+
+# AFTER
+@jax.jit
+def unroll(d):
+    @jax.vmap
+    def step(d, _):
+        d = d.replace(qpos=d.qpos.at[0].add(1e-3))
+        d = mjx.step(mjx_model, d)
+        return d, None
+    d, _ = jax.lax.scan(step, d, None, length=1000, unroll=5)
+    return d
+
+out = unroll(mjx_data)
+out.qpos.block_until_ready()
 
 t0 = time.perf_counter()
-i_cur = 0
-while True:
-    mjx_data = jit_step_n(mjx_model, mjx_data)
-
-    if args.v:
-        mj_data = mjx.get_data(mj_model, mjx_data)[0]
-        renderer.update_scene(mj_data)
-        img = renderer.render()
-
-        cv2.imshow(f'mujoco', img[..., [2, 1, 0]])
-        cv2.waitKey(1)
-
-    i_cur += jit_steps
-    if i_cur >= 1000:
-        break
-
+out = unroll(mjx_data)
+out.qpos.block_until_ready()
 t1 = time.perf_counter()
 
 print(f'per env: {1000 / (t1 - t0):,.2f} FPS')

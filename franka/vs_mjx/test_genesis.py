@@ -23,6 +23,8 @@ scene = gs.Scene(
         constraint_solver=gs.constraint_solver.CG, # to match mjx
         enable_collision=args.c,
         tolerance=1e-8, # to match mjx
+        iterations=5,
+        ls_iterations=8,
     ),
 )
 
