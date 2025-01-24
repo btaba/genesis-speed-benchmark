@@ -5,7 +5,7 @@ python test_mjx.py --mjxxml -B=1024
 python test_genesis.py -B 1024 --mjxxml
 ```
 
-Tested on RTX 4090 (steps per second):
+Tested on RTX 4090, reporting steps per second.
 
 "Genesis (no collision)" should be compared to "MJX Newton LU5 - No Contact". Only joint limits are being tested here, as done in the blog post.
 
