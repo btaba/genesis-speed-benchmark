@@ -13,7 +13,7 @@ Below is a best effort to replicate the comparison 2.2.1 from the blog post. Onl
 |---|---|---|---|
 | Genesis (no collision) | 2.24M | 17.7M | 34.8M |
 | MJX old script | 0.2M | 1.6M | 2.9M |
-| MJX Newton LU5 - No Contact | 2.2M | 10.4M | 13.4M |
+| MJX Newton - Loop Unroll 5 - No Contact | 2.2M | 10.4M | 13.4M |
 
 Key changes made to the MJX script:
 
