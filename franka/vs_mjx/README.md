@@ -23,7 +23,7 @@ Key changes made to the MJX script:
 
 _______________
 
-For the runs below (which I ran earlier on), I __think__ "Genesis (no self collision)" is the best comparison to the MJX setting in terms of the solver/collisions. Only contacts with the plane and gripper are turned on. With that being said, I'm not a Genesis expert and AFAICT contype/conaffinity are not used.
+For the runs below (which I ran earlier on), I __think__ "Genesis (no self collision)" is the best comparison to the MJX setting in terms of the solver/collisions. Only contacts with the plane and gripper are turned on. With that being said, I'm not a Genesis expert and AFAICT contype/conaffinity are not used, so take the comparison with a grain of salt.
 
 | Batch Size | 1024 | 8192 | 16384 |
 |---|---|---|---|
