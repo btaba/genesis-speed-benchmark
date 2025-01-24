@@ -21,6 +21,8 @@ Key differences compared to what was done in the blog post:
 * Scan instead of Python for loop.
 * Pick solver params that we actually use in MJX for training. Set similar params for Genesis.
 
+_______________
+
 For the runs below (which I ran earlier on), I __think__ "Genesis (no self collision)" is the best comparison to the MJX setting in terms of the solver/collisions. Only contacts with the plane and gripper are turned on. With that being said, it's hard to tell what Genesis is doing exactly; I'm not a Genesis expert and AFAICT contype/conaffinity are not used.
 
 | Batch Size | 1024 | 8192 | 16384 |
